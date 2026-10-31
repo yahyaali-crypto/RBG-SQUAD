@@ -1,0 +1,21 @@
+# Python environment and cache
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Datasets (too large for GitHub, each teammate downloads their own copy)
+data/raw/
+data/processed/
+
+# Trained models (large binary files)
+outputs/models/
+
+# Secrets (Kaggle API key)
+kaggle.json
+.env
+
+# OS and editor files
+Thumbs.db
+.DS_Store
+.vscode/
