@@ -1,0 +1,57 @@
+PHASE 1 DATA VERIFICATION
+
+=== 1. Config and manifests ===
+  [PASS] state_farm: data/manifests/state_farm_splits.csv exists
+  state_farm: 22424 rows
+  [PASS] fl3d: data/manifests/fl3d_splits.csv exists
+  fl3d: 53316 rows
+
+=== 2. Every image path exists on disk ===
+  [PASS] state_farm: 22424 of 22424 paths found
+  [PASS] fl3d: 53316 of 53316 paths found
+
+=== 3. Split integrity ===
+  [PASS] state_farm: every subject is in exactly one split
+  [PASS] state_farm: train, val and test all present
+  [PASS] state_farm: label_index matches the config label mapping
+  [PASS] state_farm train: all 10 classes present
+  [PASS] state_farm val: all 10 classes present
+  [PASS] state_farm test: all 10 classes present
+  [PASS] fl3d: every driver_id is in exactly one split
+  [PASS] fl3d: train, val and test all present
+  [PASS] fl3d: label_index matches the config label mapping
+  [PASS] fl3d train: all 3 classes present
+  [PASS] fl3d val: all 3 classes present
+  [PASS] fl3d test: all 3 classes present
+  [PASS] fl3d: excluded conflicting frames absent (0 found)
+  [PASS] state_farm: no unlabeled Kaggle test images used
+
+=== 4. TensorFlow loading pipeline (loading TensorFlow, may take a moment) ===
+  size [224, 224], method pad_to_square, scaling rescale_0_1
+  [PASS] state_farm train: batch shape (32, 224, 224, 3)
+  [PASS] state_farm train: pixel range 0.00 to 1.00 (expected within 0 to 1)
+  [PASS] state_farm train: labels within 0 to 9
+  [PASS] state_farm val: batch shape (32, 224, 224, 3)
+  [PASS] state_farm val: pixel range 0.00 to 1.00 (expected within 0 to 1)
+  [PASS] state_farm val: labels within 0 to 9
+  [PASS] state_farm test: batch shape (32, 224, 224, 3)
+  [PASS] state_farm test: pixel range 0.00 to 1.00 (expected within 0 to 1)
+  [PASS] state_farm test: labels within 0 to 9
+  [PASS] fl3d train: batch shape (32, 224, 224, 3)
+  [PASS] fl3d train: pixel range 0.00 to 0.78 (expected within 0 to 1)
+  [PASS] fl3d train: labels within 0 to 2
+  [PASS] fl3d val: batch shape (32, 224, 224, 3)
+  [PASS] fl3d val: pixel range 0.00 to 0.71 (expected within 0 to 1)
+  [PASS] fl3d val: labels within 0 to 2
+  [PASS] fl3d test: batch shape (32, 224, 224, 3)
+  [PASS] fl3d test: pixel range 0.00 to 0.59 (expected within 0 to 1)
+  [PASS] fl3d test: labels within 0 to 2
+
+=== 5. Raw data unchanged ===
+  [PASS] state_farm: 500 random raw files re-fingerprinted, 0 changed
+  [PASS] fl3d: 500 random raw files re-fingerprinted, 0 changed
+  [PASS] data/raw is not tracked by Git
+
+=== Summary ===
+ALL CHECKS PASSED. Data is ready for model training.
+Saved outputs/reports/phase1_verification.txt and outputs/figures/preprocessed_samples.png
