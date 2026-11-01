@@ -1,28 +1,28 @@
 video_id,driver_id,notes
-P1042751_720,d06,
-P1042756_720,d07,
-P1042757_720,d08,"possible match with 1042793, recheck"
-P1042762_720,d09,
-P1042767_720,d10,
-P1042772_720,d11,
-P1042777_720,d12,
-P1042780_720,d13,
-P1042787_720,d14,
-P1042793_720,d15,"possible match with 1042757, recheck"
-P1042797_720,d16,
-P1043066_720,d17,"possible match with 1043067, recheck"
-P1043067_720,d18,"possible match with 1043066, recheck"
-P1043068_720,d19,
+P1042751_720,d08,
+P1042756_720,d09,"checked against each other (6-frame), judged different"
+P1042757_720,d07,confirmed same person after 6-frame check
+P1042762_720,d10,
+P1042767_720,d11,
+P1042772_720,d12,
+P1042777_720,d13,
+P1042780_720,d14,"checked against each other (6-frame), judged different"
+P1042787_720,d15,
+P1042793_720,d07,confirmed same person after 6-frame check
+P1042797_720,d16,"checked against each other (6-frame), judged different"
+P1043066_720,d06,confirmed same person after 6-frame check
+P1043067_720,d06,confirmed same person after 6-frame check
+P1043068_720,d17,"checked against each other (6-frame), judged different"
 P1043075_720,d01,
 P1043076_720,d01,
 P1043078_720,d01,
 P1043079_720,d01,
-P1043080_720,d20,"judged different from d01 by team; looks similar on sheet, recheck"
-P1043081_720,d21,"judged different from d01 by team; looks similar on sheet, recheck"
+P1043080_720,d01,merged into d01 after 6-frame check
+P1043081_720,d01,merged into d01 after 6-frame check
 P1043086_720,d03,"checked against d04, judged different woman"
 P1043087_720,d03,"checked against d04, judged different woman"
-P1043089_720,d22,
-P1043106_720,d23,
+P1043089_720,d18,
+P1043106_720,d19,
 P1043115_720,d04,"checked against d03, judged different woman"
 P1043116_720,d04,"checked against d03, judged different woman"
 P1043117_720,d04,"checked against d03, judged different woman"
