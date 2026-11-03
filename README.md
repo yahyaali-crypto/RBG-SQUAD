@@ -74,7 +74,7 @@ Read `outputs/reports/data_decisions.md` for why each data decision was made.
 | UC-04 Detect Drowsiness | Ali Yahya |
 | UC-05 Display the Prediction and Confidence Score | Aaron Amano |
 
-## Data sources and licenses
+## Data sources 
 
 - State Farm Distracted Driver Detection (Kaggle competition rules)
 - FL3D on Kaggle (CC BY-SA 4.0), built from NITYMED. Cite both.
