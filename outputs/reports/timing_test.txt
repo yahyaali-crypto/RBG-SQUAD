@@ -1,0 +1,7 @@
+Loading only:        1194.2 images/sec
+Baseline CNN:          60.4 images/sec
+MobileNetV2 frozen:   147.4 images/sec
+
+Estimated time per epoch (15606 train + 3376 val images):
+  Baseline CNN         about   4.6 min/epoch,  0.8 hours for 10 epochs
+  MobileNetV2 frozen   about   1.9 min/epoch,  0.3 hours for 10 epochs
