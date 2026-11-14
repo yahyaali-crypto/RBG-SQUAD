@@ -1,0 +1,89 @@
+# Preprocessing configuration for the Distracted Driver Detection project.
+# Every data-preparation decision lives here so the whole team prepares
+# images the same way. Change a value here, not inside a script.
+#
+# Images are NOT copied or resized on disk. Training code reads the raw files
+# listed in the split manifests and resizes them on the fly. data/raw is never
+# modified.
+
+seed: 42  # used for every random choice (splits, sampling, augmentation)
+
+shared:
+  image_size: [224, 224]       # height, width fed to the CNN
+  resize_method: pad_to_square # keep aspect ratio, pad with black (tf.image.resize_with_pad)
+  color_mode: rgb              # 3 channels, both datasets are RGB
+  scaling: rescale_0_1         # pixel / 255.0. Revisit if a pretrained model needs its own preprocess_input
+  split_ratios:                # target share of IMAGES per split, assigned by whole driver
+    train: 0.70
+    val: 0.15
+    test: 0.15
+  augmentation_applies_to: [train]  # never augment val or test
+
+state_farm:
+  inventory: data/manifests/state_farm_inventory.csv
+  split_manifest: data/manifests/state_farm_splits.csv
+  group_column: subject        # driver ID. All images of one driver stay in one split
+  label_column: classname
+  labels:                      # index: code (meaning)
+    0: c0   # safe driving
+    1: c1   # texting - right
+    2: c2   # talking on the phone - right
+    3: c3   # texting - left
+    4: c4   # talking on the phone - left
+    5: c5   # operating the radio
+    6: c6   # drinking
+    7: c7   # reaching behind
+    8: c8   # hair and makeup
+    9: c9   # talking to passenger
+  excluded:
+    - "imgs/test (79,726 images): Kaggle competition images with no labels"
+  augmentation:
+    horizontal_flip: false     # flipping swaps left and right hands, which changes the class (c1<->c3, c2<->c4)
+    rotation_degrees: 10
+    zoom: 0.10
+    brightness: 0.10
+  class_balance: none          # mild imbalance (largest class about 1.3x the smallest)
+  notes:
+    - "All images are 640x480 RGB. 0 corrupt, 0 exact duplicates, CSV matches folders."
+    - "26 drivers. Driver p072 has very few c5 (6) and c7 (2) images."
+    - "Frames within a driver are near-duplicates, so splits must be driver-disjoint."
+
+fl3d:
+  inventory: data/manifests/fl3d_inventory.csv
+  driver_map: data/manifests/fl3d_video_driver_map.csv  # hand-made, 19 drivers
+  split_manifest: data/manifests/fl3d_splits.csv
+  group_column: driver_id      # from driver_map. All videos of one driver stay in one split
+  label_column: label
+  labels:
+    0: alert
+    1: microsleep
+    2: yawning
+  official_splits_used: false  # official val and test share videos, and holdout shares drivers with train
+  excluded:
+    reason: "Label differs between annotations_all.json and the per-video annotations_final.json"
+    frames:
+      - P1042762_720/frame70.jpg
+      - P1042762_720/frame71.jpg
+      - P1042762_720/frame72.jpg
+      - P1042762_720/frame73.jpg
+      - P1042762_720/frame74.jpg
+      - P1042762_720/frame75.jpg
+      - P1042762_720/frame76.jpg
+      - P1042762_720/frame77.jpg
+      - P1042762_720/frame78.jpg
+      - P1042762_720/frame79.jpg
+      - P1043078_720/frame281.jpg
+      - P1043078_720/frame356.jpg
+      - P1043081_720/frame179.jpg
+      - P1043081_720/frame533.jpg
+      - P1043106_720/frame525.jpg
+  augmentation:
+    horizontal_flip: true      # faces are roughly symmetric, the label does not depend on side
+    brightness: 0.15
+    contrast: 0.15
+  class_balance: class_weights # alert is about 73% of frames. Apply weights at training time
+  notes:
+    - "Frames are face crops of varying size (about 107-304 wide, 156-411 tall), so resizing is required."
+    - "Blink frames were removed by the dataset author, so frame sequences have gaps."
+    - "No driver ID in the dataset. Driver groups were assigned by the team from face review sheets."
+    - "License CC BY-SA 4.0. Cite FL3D and the NITYMED paper."
