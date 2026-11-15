@@ -1,0 +1,51 @@
+=== 1. Confidence threshold (chosen on VALIDATION) ===
+threshold   kept   accuracy of kept
+     0.30  85.6%        64.2%
+     0.35  77.5%        67.8%
+     0.40  68.1%        70.6%
+     0.45  57.4%        73.9%
+     0.50  49.1%        77.4%
+     0.55  42.5%        79.9%
+     0.60  36.7%        81.7%
+     0.65  32.0%        82.8%
+     0.70  26.5%        84.4%
+     0.75  20.5%        85.9%
+     0.80  15.8%        88.0%
+     0.85  10.9%        88.6%
+     0.90   6.1%        92.2%
+     0.95   2.3%        90.9%
+Chosen threshold: 0.75
+
+=== 2. TEST set results ===
+baseline     accuracy 58.1%   macro F1 0.533
+mobilenetv2  accuracy 44.5%   macro F1 0.467
+
+Per-class results (final model):
+                                      precision    recall  f1-score   support
+
+                     c0 Safe driving       0.40      0.33      0.36       383
+             c1 Texting (right hand)       0.84      0.73      0.78       395
+c2 Talking on the phone (right hand)       0.64      0.97      0.77       357
+              c3 Texting (left hand)       0.37      0.84      0.51       354
+ c4 Talking on the phone (left hand)       0.73      0.36      0.49       359
+              c5 Operating the radio       0.95      0.95      0.95       335
+                         c6 Drinking       0.83      0.71      0.77       356
+                  c7 Reaching behind       0.55      0.76      0.64       294
+                  c8 Hair and makeup       0.10      0.06      0.07       283
+             c9 Talking to passenger       0.00      0.00      0.00       326
+
+                            accuracy                           0.58      3442
+                           macro avg       0.54      0.57      0.53      3442
+                        weighted avg       0.55      0.58      0.55      3442
+
+Most common mix-ups (true -> predicted, share of the true class):
+  Safe driving -> Texting (left hand): 49%
+  Hair and makeup -> Talking on the phone (right hand): 45%
+  Talking to passenger -> Texting (left hand): 44%
+  Talking on the phone (left hand) -> Texting (left hand): 39%
+  Talking to passenger -> Safe driving: 35%
+
+=== 3. Confidence rule on TEST (threshold 0.75) ===
+Specific behavior reported:  20.3% of images, correct 88.4%
+General 'distracted' only:   67.3% of images, truly distracted 90.3%
+Unable to determine:         12.3% of images

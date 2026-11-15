@@ -1,0 +1,6 @@
+{
+  "model": "baseline.keras",
+  "threshold": 0.75,
+  "target_accuracy": 0.85,
+  "chosen_on": "validation"
+}

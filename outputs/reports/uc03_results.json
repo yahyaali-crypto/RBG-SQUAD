@@ -1,0 +1,16 @@
+{
+  "threshold": 0.75,
+  "baseline": {
+    "accuracy": 0.5808,
+    "macro_f1": 0.5335
+  },
+  "mobilenetv2": {
+    "accuracy": 0.4445,
+    "macro_f1": 0.467
+  },
+  "rule": {
+    "specific_share": 0.2034,
+    "general_share": 0.6732,
+    "unable_share": 0.1235
+  }
+}
