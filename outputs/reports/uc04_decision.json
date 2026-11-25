@@ -1,0 +1,6 @@
+{
+  "model": "drowsiness_mobilenetv2_finetuned.keras",
+  "threshold": 0.85,
+  "target_accuracy": 0.97,
+  "chosen_on": "validation"
+}

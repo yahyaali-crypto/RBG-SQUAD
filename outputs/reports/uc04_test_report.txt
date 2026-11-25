@@ -1,0 +1,46 @@
+=== 1. Model choice (VALIDATION macro F1) ===
+baseline     val macro F1 0.864
+mobilenetv2  val macro F1 0.921
+Final model (chosen on validation): mobilenetv2
+
+=== Confidence threshold (chosen on VALIDATION) ===
+threshold   kept   accuracy of kept
+     0.30 100.0%        94.5%
+     0.35 100.0%        94.5%
+     0.40 100.0%        94.5%
+     0.45 100.0%        94.5%
+     0.50  99.9%        94.5%
+     0.55  99.1%        94.8%
+     0.60  98.1%        95.2%
+     0.65  97.2%        95.5%
+     0.70  96.0%        96.0%
+     0.75  94.9%        96.3%
+     0.80  93.5%        96.7%
+     0.85  92.0%        97.1%
+     0.90  89.8%        97.6%
+     0.95  86.3%        98.4%
+Chosen threshold: 0.85
+
+=== 2. TEST set results (final model only) ===
+mobilenetv2: accuracy 91.4%   macro F1 0.879
+
+Per-class results:
+                                  precision    recall  f1-score   support
+
+                   alert (Alert)       0.92      0.97      0.94      5690
+microsleep (Possible microsleep)       0.94      0.67      0.78      1487
+               yawning (Yawning)       0.85      0.98      0.91       981
+
+                        accuracy                           0.91      8158
+                       macro avg       0.91      0.87      0.88      8158
+                    weighted avg       0.92      0.91      0.91      8158
+
+Accuracy per test driver:
+  d02: 94.7% on 3501 frames
+  d06: 88.9% on 3815 frames
+  d17: 89.1% on 842 frames
+
+=== 3. Confidence rule on TEST (threshold 0.85) ===
+Specific state reported:  90.1% of frames, correct 95.2%
+General 'drowsy' only:    0.6% of frames, truly drowsy 97.9%
+Unable to determine:      9.3% of frames

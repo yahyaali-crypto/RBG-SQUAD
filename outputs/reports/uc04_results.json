@@ -1,0 +1,16 @@
+{
+  "final_model": "mobilenetv2",
+  "threshold": 0.85,
+  "accuracy": 0.9142,
+  "macro_f1": 0.8794,
+  "recall": {
+    "alert": 0.9671,
+    "microsleep": 0.6678,
+    "yawning": 0.9806
+  },
+  "rule": {
+    "specific_share": 0.9011,
+    "general_share": 0.0059,
+    "unable_share": 0.093
+  }
+}
