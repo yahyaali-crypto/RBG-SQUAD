@@ -20,7 +20,7 @@ ESTIMATE_NOTE = "This is an estimate, not a guaranteed result."  # BR-05
 def get_drowsiness(image_path):
     """UC-04 result from Ali's model, or None if it is not available yet.
 
-    Ali's file src/models/predict_drowsiness.py must provide
+    Ali's file src/models/predict_drowsiness.py provides
     predict_drowsiness(image_path) returning:
       {"category": "alert" | "drowsy" | "unable to determine",
        "behavior": "Yawning" | "Possible microsleep" | None,
@@ -40,6 +40,16 @@ def _result(overall, source):
     return {"overall": overall, "behavior": behavior, "confidence": source["confidence"]}
 
 
+def _status(model_result):
+    """How far a model got: 'checked', 'not checked' (not run),
+    or 'could not be checked' (ran, but said unable to determine)."""
+    if model_result is None:
+        return "not checked"
+    if model_result["category"] == "unable to determine":
+        return "could not be checked"
+    return "checked"
+
+
 def _message(r):
     """Plain-language result for a non-technical user (NFR-02)."""
     pct = f"{r['confidence']:.0%} confidence"
@@ -53,15 +63,23 @@ def _message(r):
         text = f"The driver appears {r['overall']}, but the specific behavior is unclear ({pct})."
     if r.get("also_detected"):
         text += f" The driver may also be {r['also_detected']}."
-    if not r["drowsiness_checked"]:
-        text += " Drowsiness was not checked."
+    for name, status in (("Distraction", r["distraction_checked"]), ("Drowsiness", r["drowsiness_checked"])):
+        if r["overall"] == "unable to determine" and name == "Distraction":
+            continue  # the 'unable' sentence already covers it
+        if status == "not checked":
+            text += f" {name} was not checked."
+        elif status == "could not be checked":
+            text += f" {name} could not be checked from this image."
     return f"{text} {ESTIMATE_NOTE}"
 
 
 def combine(distraction, drowsiness):
-    """The UC-01 decision rules. Pure logic with no model, so it is easy to test."""
-    d_cat = distraction["category"]
-    z_cat = drowsiness["category"] if drowsiness else "not checked"
+    """The UC-01 decision rules. Either input can be None (that model was not run)."""
+    d_status, z_status = _status(distraction), _status(drowsiness)
+    d_cat = distraction["category"] if distraction else "not checked"
+    # A drowsiness 'unable' (face not readable) counts as not checked, so it cannot
+    # overrule a confident distraction result. A distraction 'unable' stays 'unable'.
+    z_cat = drowsiness["category"] if z_status == "checked" else "not checked"
     is_distracted = d_cat == "distracted"
     is_drowsy = z_cat == "drowsy"
 
@@ -78,14 +96,18 @@ def combine(distraction, drowsiness):
         result = _result("distracted", distraction)
     elif d_cat == "safe" and z_cat in ("alert", "not checked"):
         conf = distraction["confidence"]
-        if drowsiness:
+        if z_cat == "alert":
             conf = min(conf, drowsiness["confidence"])  # only as sure as the less sure model
         result = {"overall": "safe and alert", "behavior": None, "confidence": round(conf, 3)}
+    elif d_cat == "not checked" and z_cat == "alert":
+        # Face close-up: distraction was not run, but the driver looks alert
+        result = {"overall": "safe and alert", "behavior": None, "confidence": drowsiness["confidence"]}
     else:
-        result = {"overall": "unable to determine", "behavior": None,
-                  "confidence": distraction["confidence"]}
+        conf = (distraction or drowsiness or {"confidence": 0.0})["confidence"]
+        result = {"overall": "unable to determine", "behavior": None, "confidence": conf}
 
-    result["drowsiness_checked"] = drowsiness is not None
+    result["distraction_checked"] = d_status
+    result["drowsiness_checked"] = z_status
     result["message"] = _message(result)
     return result
 

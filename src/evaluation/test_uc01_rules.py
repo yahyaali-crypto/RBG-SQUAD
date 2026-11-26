@@ -12,7 +12,11 @@ def Z(category, conf, behavior=None):
     return {"category": category, "confidence": conf, "behavior": behavior}
 
 
+UNSURE_D = D("unable to determine", 0.5, status="unable")
+UNREADABLE_FACE = Z("unable to determine", 0.4)
+
 cases = [
+    # Cabin photos (both models can run)
     ("safe, drowsiness not checked", D("safe", 0.9, "Safe driving"), None, "safe and alert"),
     ("safe and alert", D("safe", 0.9, "Safe driving"), Z("alert", 0.8), "safe and alert"),
     ("texting only", D("distracted", 0.91, "Texting (right hand)"), Z("alert", 0.9), "distracted"),
@@ -22,10 +26,13 @@ cases = [
     ("yawning only", D("safe", 0.9, "Safe driving"), Z("drowsy", 0.84, "Yawning"), "drowsy"),
     ("both, drowsy more confident", D("distracted", 0.7, "Drinking"), Z("drowsy", 0.9, "Yawning"), "drowsy"),
     ("both, distracted more confident", D("distracted", 0.95, "Drinking"), Z("drowsy", 0.8, "Yawning"), "distracted"),
-    ("distraction model unsure", D("unable to determine", 0.5, status="unable"), Z("alert", 0.9),
-     "unable to determine"),
-    ("safe but face not visible", D("safe", 0.9, "Safe driving"), Z("unable to determine", 0.4),
-     "unable to determine"),
+    ("distraction model unsure", UNSURE_D, Z("alert", 0.9), "unable to determine"),
+    ("safe, face could not be read", D("safe", 0.9, "Safe driving"), UNREADABLE_FACE, "safe and alert"),
+    ("texting, face could not be read", D("distracted", 0.9, "Texting (left hand)"), UNREADABLE_FACE, "distracted"),
+    # Face close-ups (distraction not run)
+    ("face photo, yawning", None, Z("drowsy", 0.93, "Yawning"), "drowsy"),
+    ("face photo, alert", None, Z("alert", 0.9), "safe and alert"),
+    ("face photo, face unreadable", None, UNREADABLE_FACE, "unable to determine"),
 ]
 
 failures = 0
@@ -35,9 +42,18 @@ for name, d, z, expected in cases:
     failures += not ok
     print(f"[{'PASS' if ok else 'FAIL'}] {name}: {r['overall']}\n         {r['message']}")
 
-general = combine(cases[3][1], None)
-ok = general["behavior"] is None
-failures += not ok
-print(f"[{'PASS' if ok else 'FAIL'}] BR-03: an unclear behavior is not reported as specific")
+
+def extra(name, ok):
+    global failures
+    failures += not ok
+    print(f"[{'PASS' if ok else 'FAIL'}] {name}")
+
+
+extra("BR-03: an unclear behavior is not reported as specific",
+      combine(cases[3][1], None)["behavior"] is None)
+extra("Unreadable face says 'could not be checked'",
+      "could not be checked" in combine(cases[8][1], UNREADABLE_FACE)["message"])
+extra("Face photo says distraction was not checked",
+      "Distraction was not checked" in combine(None, Z("drowsy", 0.93, "Yawning"))["message"])
 
 print("\nAll UC-01 rules passed." if failures == 0 else f"\n{failures} rule(s) FAILED.")

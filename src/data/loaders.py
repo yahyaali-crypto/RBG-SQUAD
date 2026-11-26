@@ -35,7 +35,7 @@ def load_image(path, cfg):
     """Read one image: decode, pad to square, resize, scale to 0-1.
     The app (UC-02) must prepare uploaded images with these same steps."""
     height, width = cfg["shared"]["image_size"]
-    img = tf.io.decode_jpeg(tf.io.read_file(path), channels=3)
+    img = tf.io.decode_image(tf.io.read_file(path), channels=3, expand_animations=False)
     if cfg["shared"]["resize_method"] == "pad_to_square":
         img = tf.image.resize_with_pad(img, height, width)
     else:
